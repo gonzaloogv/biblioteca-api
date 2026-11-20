@@ -1,0 +1,632 @@
+{
+  "client": "Thunder Client",
+  "collectionName": "Biblioteca API",
+  "dateExported": "2026-11-20T00:00:00.000Z",
+  "version": "1.2",
+  "folders": [],
+  "requests": [
+    {
+      "_id": "c90502c3-40b4-5e4b-9ab9-a80eb702bbef",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "01. Registrar usuario — 201",
+      "url": "{{baseUrl}}/api/auth/register",
+      "method": "POST",
+      "sortNum": 10000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Ana Pérez\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "8cb8d334-2e98-5438-a55e-2652e35e49aa",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "02. Email duplicado — 400",
+      "url": "{{baseUrl}}/api/auth/register",
+      "method": "POST",
+      "sortNum": 20000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Ana Pérez\",\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "a35c04df-e851-56c9-8bb7-7d3f5349e684",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "03. Login y guardar token — 200",
+      "url": "{{baseUrl}}/api/auth/login",
+      "method": "POST",
+      "sortNum": 30000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json.token",
+          "action": "setto",
+          "value": "{{token}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"{{password}}\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "f1a1e1cf-d790-541c-b750-41f22ec90245",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "04. Contraseña incorrecta — 401",
+      "url": "{{baseUrl}}/api/auth/login",
+      "method": "POST",
+      "sortNum": 40000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "401"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"{{email}}\",\n  \"password\": \"Incorrecta123!\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "de482b8a-a952-526a-ab86-a89a8ab7977f",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "05. Listar libros sin token — 200",
+      "url": "{{baseUrl}}/api/books",
+      "method": "GET",
+      "sortNum": 50000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "345e163a-45e3-54bf-9330-6db095bb8c05",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "06. Crear sin token — 401",
+      "url": "{{baseUrl}}/api/books",
+      "method": "POST",
+      "sortNum": 60000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "401"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"El principito\",\n  \"author\": \"Antoine de Saint-Exupéry\",\n  \"year\": 1943,\n  \"genre\": \"Fantasía\",\n  \"available\": true\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "8450269c-bc0c-5c1e-b8ab-728478d3023d",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "07. Título vacío — 400",
+      "url": "{{baseUrl}}/api/books",
+      "method": "POST",
+      "sortNum": 70000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \" \",\n  \"author\": \"Antoine de Saint-Exupéry\",\n  \"year\": 1943,\n  \"genre\": \"Fantasía\",\n  \"available\": true\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "672ec9bc-e6d1-564e-ad4a-076c53fbaac1",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "08. Año futuro — 400",
+      "url": "{{baseUrl}}/api/books",
+      "method": "POST",
+      "sortNum": 80000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"El principito\",\n  \"author\": \"Antoine de Saint-Exupéry\",\n  \"year\": 9999,\n  \"genre\": \"Fantasía\",\n  \"available\": true\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "602b5e9b-fba7-5950-841c-008fa1a13eab",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "09. Crear libro y guardar bookId — 201",
+      "url": "{{baseUrl}}/api/books",
+      "method": "POST",
+      "sortNum": 90000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "set-env-var",
+          "custom": "json._id",
+          "action": "setto",
+          "value": "{{bookId}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"El principito\",\n  \"author\": \"Antoine de Saint-Exupéry\",\n  \"year\": 1943,\n  \"genre\": \"Fantasía\",\n  \"available\": true\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "1cdf2a27-3bfa-57d2-bf2d-4bf60a1a0f92",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "10. Buscar libro por ID — 200",
+      "url": "{{baseUrl}}/api/books/{{bookId}}",
+      "method": "GET",
+      "sortNum": 100000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "a3c3b128-50bc-5010-a2c3-872b931e6bc5",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "11. Filtrar por género — 200",
+      "url": "{{baseUrl}}/api/books?genre=Fantas%C3%ADa",
+      "method": "GET",
+      "sortNum": 110000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "31fa1c5a-da20-55b0-b0d6-640592bce1b0",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "12. Filtrar disponibilidad — 200",
+      "url": "{{baseUrl}}/api/books?available=true",
+      "method": "GET",
+      "sortNum": 120000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "2631532b-1c70-554a-882b-989078e44f1c",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "13. ID mal formado — 400",
+      "url": "{{baseUrl}}/api/books/no-es-id",
+      "method": "GET",
+      "sortNum": 130000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        }
+      ]
+    },
+    {
+      "_id": "190007b5-1c3b-56ab-806e-09ee29690012",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "14. Libro inexistente — 404",
+      "url": "{{baseUrl}}/api/books/000000000000000000000000",
+      "method": "GET",
+      "sortNum": 140000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "404"
+        }
+      ]
+    },
+    {
+      "_id": "338db88a-fc12-5079-afe1-f03308ec5f55",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "15. Token inválido — 401",
+      "url": "{{baseUrl}}/api/books",
+      "method": "POST",
+      "sortNum": 150000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer token-invalido"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "401"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"El principito\",\n  \"author\": \"Antoine de Saint-Exupéry\",\n  \"year\": 1943,\n  \"genre\": \"Fantasía\",\n  \"available\": true\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "3395834e-a046-5692-9952-de9cf9e69cc5",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "16. PUT incompleto — 400",
+      "url": "{{baseUrl}}/api/books/{{bookId}}",
+      "method": "PUT",
+      "sortNum": 160000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"Otro título\"\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "d1b22209-814d-58e3-82ab-85d0f452a3c0",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "17. Actualizar libro completo — 200",
+      "url": "{{baseUrl}}/api/books/{{bookId}}",
+      "method": "PUT",
+      "sortNum": 170000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        },
+        {
+          "name": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"El principito\",\n  \"author\": \"Antoine de Saint-Exupéry\",\n  \"year\": 1943,\n  \"genre\": \"Fantasía\",\n  \"available\": false\n}",
+        "form": []
+      }
+    },
+    {
+      "_id": "451afba1-1cb6-5090-8e3e-359969544bb0",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "18. Consultar libro actualizado — 200",
+      "url": "{{baseUrl}}/api/books/{{bookId}}",
+      "method": "GET",
+      "sortNum": 180000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "a81c3b6e-b8b0-5b43-aae2-163b814bddcc",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "19. Eliminar sin token — 401",
+      "url": "{{baseUrl}}/api/books/{{bookId}}",
+      "method": "DELETE",
+      "sortNum": 190000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "401"
+        }
+      ]
+    },
+    {
+      "_id": "5fef23a7-0a70-57d4-a232-2aa0acf141f7",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "20. Eliminar libro — 200",
+      "url": "{{baseUrl}}/api/books/{{bookId}}",
+      "method": "DELETE",
+      "sortNum": 200000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "200"
+        }
+      ]
+    },
+    {
+      "_id": "2f2fafbe-e030-57dc-90bb-2332c19bc7f1",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "21. Consultar libro eliminado — 404",
+      "url": "{{baseUrl}}/api/books/{{bookId}}",
+      "method": "GET",
+      "sortNum": 210000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "404"
+        }
+      ]
+    },
+    {
+      "_id": "8d52410c-9d31-59f1-9f81-142b9b0601dd",
+      "colId": "ed6417ec-de14-552c-999b-60dc07750cc0",
+      "containerId": "",
+      "name": "22. JSON mal formado — 400",
+      "url": "{{baseUrl}}/api/auth/register",
+      "method": "POST",
+      "sortNum": 220000,
+      "created": "2026-11-20T00:00:00.000Z",
+      "modified": "2026-11-20T00:00:00.000Z",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "params": [],
+      "tests": [
+        {
+          "type": "res-code",
+          "custom": "",
+          "action": "equal",
+          "value": "400"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{ roto",
+        "form": []
+      }
+    }
+  ]
+}

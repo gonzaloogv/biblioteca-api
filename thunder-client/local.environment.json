@@ -1,0 +1,28 @@
+{
+  "client": "Thunder Client",
+  "environmentName": "Biblioteca local",
+  "dateExported": "2026-11-20T00:00:00.000Z",
+  "version": "1.0",
+  "variables": [
+    {
+      "name": "baseUrl",
+      "value": "http://localhost:3000"
+    },
+    {
+      "name": "email",
+      "value": "ana.tp@example.com"
+    },
+    {
+      "name": "password",
+      "value": "Biblioteca123!"
+    },
+    {
+      "name": "token",
+      "value": ""
+    },
+    {
+      "name": "bookId",
+      "value": ""
+    }
+  ]
+}
