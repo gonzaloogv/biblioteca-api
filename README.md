@@ -65,7 +65,8 @@ La API escucha en `http://localhost:3000`. Primero se conecta a MongoDB y prepar
 
 ```text
 src/
-  app.ts                         # Configura Express y sus middlewares
+  app.ts                         # Configura Express con los routers que recibe
+  container.ts                   # Composition root: conecta implementaciones e interfaces
   server.ts                      # Conecta la base e inicia el servidor
   config/
     env.ts                       # Lee y valida las variables de entorno
@@ -74,22 +75,28 @@ src/
     auth/
       auth.routes.ts             # Registro y login
       auth.controller.ts         # Lee la petición y responde; usa try/catch
-      auth.service.ts            # Valida, aplica bcrypt y genera el JWT
+      auth.service.ts            # Valida credenciales; depende de interfaces
+      auth.types.ts              # Interfaces PasswordHasher y TokenService
+      password-hasher.ts         # Implementación con bcrypt
+      token.service.ts           # Implementación con JWT
     users/
+      user.types.ts              # Tipos User e interfaz UserRepository
+      user.errors.ts             # Error de email ya registrado
       user.model.ts              # Modelo User de Mongoose
-      user.repository.ts         # Acceso a los usuarios en MongoDB
+      user.repository.ts         # UserRepository con MongoDB
     books/
       book.routes.ts             # Endpoints del CRUD
       book.controller.ts         # Controladores con try/catch
       book.service.ts            # Reglas de negocio y validaciones
-      book.repository.ts         # Consultas a MongoDB
-      book.model.ts              # Modelo Book y tipos de entrada
+      book.types.ts              # Tipos Book e interfaz BookRepository
+      book.repository.ts         # BookRepository con MongoDB
+      book.model.ts              # Modelo Book de Mongoose
   middlewares/
     auth.middleware.ts           # Verifica el JWT antes de escribir
-    error.middleware.ts          # Respuestas de error uniformes en JSON
+    error.middleware.ts          # Traduce errores a respuestas JSON
     logger.middleware.ts         # Método, ruta y estado de cada petición
   shared/
-    app-error.ts                 # Error con código HTTP y mensaje público
+    app-error.ts                 # AppError y errores 400, 401 y 404
     validation.ts                # Validaciones pequeñas compartidas
 tests/
   api.test.ts                    # Pruebas HTTP contra MongoDB temporal
@@ -103,6 +110,20 @@ docs/
 ```
 
 Ejemplo de flujo: `PUT /api/books/:id` → middleware JWT → controlador → servicio (valida ID y libro) → repositorio → MongoDB. La respuesta recorre el camino de vuelta. Si hay un error, el `catch` del controlador lo pasa a `next(error)` y el middleware de errores responde.
+
+### Diseño y principios SOLID
+
+| Principio | Cómo se aplica |
+| --- | --- |
+| **S**: responsabilidad única | Cada archivo tiene una tarea: rutas, controlador (HTTP), servicio (reglas), repositorio (base), hasher (bcrypt) y servicio de tokens (JWT). |
+| **O**: abierto/cerrado | `error.middleware.ts` recorre una lista de *mappers*. Para soportar un error nuevo se agrega un mapper, sin modificar el handler. |
+| **L**: sustitución de Liskov | `BadRequestError`, `UnauthorizedError` y `NotFoundError` extienden `AppError`, y el middleware los trata a todos como `AppError`. |
+| **I**: segregación de interfaces | Interfaces chicas y específicas: `BookRepository`, `UserRepository`, `PasswordHasher` y `TokenService`. |
+| **D**: inversión de dependencias | Los servicios y el middleware JWT reciben interfaces por parámetro. Solo `container.ts` conoce Mongoose, bcrypt y jsonwebtoken. |
+
+Patrones utilizados: arquitectura en capas, Repository, Service Layer, Factory (funciones `create...`), inyección de dependencias con un *composition root*, cadena de middlewares y manejo centralizado de errores.
+
+Gracias a la inyección de dependencias, la prueba del error 500 reemplaza el repositorio por uno que falla, sin modificar el código de producción.
 
 ## 5. Modelos y validaciones
 
@@ -258,7 +279,7 @@ Cubren registro, hash bcrypt, email duplicado, login, JWT, lectura pública, esc
 | Los cinco endpoints CRUD | `src/components/books/book.routes.ts` |
 | Rutas, controlador, servicio, acceso a datos | Archivos separados dentro de cada componente |
 | Dos o más validaciones de negocio | `book.service.ts`: textos, año y disponibilidad |
-| Bcrypt + JWT | `src/components/auth/auth.service.ts` |
+| Bcrypt + JWT | `auth.service.ts`, `password-hasher.ts` y `token.service.ts` en `src/components/auth/` |
 | Escrituras protegidas | `auth.middleware.ts` y `book.routes.ts` |
 | Estados 200, 201, 400, 401, 404 y 500 | Controladores, middleware de errores y pruebas |
 | Try/catch en todos los controladores | `auth.controller.ts` y `book.controller.ts` |

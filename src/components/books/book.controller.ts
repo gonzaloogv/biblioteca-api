@@ -1,42 +1,49 @@
 import type { RequestHandler } from 'express';
-import { bookService } from './book.service.js';
+import type { BookService } from './book.service.js';
 
-export const listBooks: RequestHandler = async (req, res, next) => {
-  try {
-    res.status(200).json(await bookService.findAll(req.query));
-  } catch (error) {
-    next(error);
-  }
-};
+/** Traduce HTTP a llamadas del servicio. Cada handler deriva los errores al middleware con next(error). */
+export function createBookController(service: BookService) {
+  const list: RequestHandler = async (req, res, next) => {
+    try {
+      res.status(200).json(await service.findAll(req.query));
+    } catch (error) {
+      next(error);
+    }
+  };
 
-export const getBook: RequestHandler = async (req, res, next) => {
-  try {
-    res.status(200).json(await bookService.findById(req.params.id));
-  } catch (error) {
-    next(error);
-  }
-};
+  const getById: RequestHandler = async (req, res, next) => {
+    try {
+      res.status(200).json(await service.findById(req.params.id));
+    } catch (error) {
+      next(error);
+    }
+  };
 
-export const createBook: RequestHandler = async (req, res, next) => {
-  try {
-    res.status(201).json(await bookService.create(req.body));
-  } catch (error) {
-    next(error);
-  }
-};
+  const create: RequestHandler = async (req, res, next) => {
+    try {
+      res.status(201).json(await service.create(req.body));
+    } catch (error) {
+      next(error);
+    }
+  };
 
-export const updateBook: RequestHandler = async (req, res, next) => {
-  try {
-    res.status(200).json(await bookService.update(req.params.id, req.body));
-  } catch (error) {
-    next(error);
-  }
-};
+  const update: RequestHandler = async (req, res, next) => {
+    try {
+      res.status(200).json(await service.update(req.params.id, req.body));
+    } catch (error) {
+      next(error);
+    }
+  };
 
-export const deleteBook: RequestHandler = async (req, res, next) => {
-  try {
-    res.status(200).json(await bookService.remove(req.params.id));
-  } catch (error) {
-    next(error);
-  }
-};
+  const remove: RequestHandler = async (req, res, next) => {
+    try {
+      res.status(200).json(await service.remove(req.params.id));
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  return { list, getById, create, update, remove };
+}
+
+export type BookController = ReturnType<typeof createBookController>;

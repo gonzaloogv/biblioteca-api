@@ -1,10 +1,12 @@
-import { Router } from 'express';
-import { requireAuth } from '../../middlewares/auth.middleware.js';
-import { createBook, deleteBook, getBook, listBooks, updateBook } from './book.controller.js';
+import { Router, type RequestHandler } from 'express';
+import type { BookController } from './book.controller.js';
 
-export const bookRouter = Router();
-bookRouter.get('/', listBooks);
-bookRouter.get('/:id', getBook);
-bookRouter.post('/', requireAuth, createBook);
-bookRouter.put('/:id', requireAuth, updateBook);
-bookRouter.delete('/:id', requireAuth, deleteBook);
+export function createBookRouter(controller: BookController, requireAuth: RequestHandler): Router {
+  const router = Router();
+  router.get('/', controller.list);
+  router.get('/:id', controller.getById);
+  router.post('/', requireAuth, controller.create);
+  router.put('/:id', requireAuth, controller.update);
+  router.delete('/:id', requireAuth, controller.remove);
+  return router;
+}

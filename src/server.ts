@@ -1,12 +1,14 @@
 import mongoose from 'mongoose';
-import { app } from './app.js';
+import { createApp } from './app.js';
+import { UserModel } from './components/users/user.model.js';
 import { connectDatabase } from './config/database.js';
 import { env } from './config/env.js';
-import { User } from './components/users/user.model.js';
+import { createContainer } from './container.js';
 
 async function main(): Promise<void> {
-  await connectDatabase();
-  await User.init();
+  await connectDatabase(env.mongoUri);
+  await UserModel.init();
+  const app = createApp(createContainer({ jwtSecret: env.jwtSecret }));
   const server = app.listen(env.port, () => {
     console.log(`Biblioteca API disponible en http://localhost:${env.port}`);
   });

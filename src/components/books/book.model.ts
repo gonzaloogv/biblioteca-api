@@ -8,17 +8,4 @@ const bookSchema = new Schema({
   available: { type: Boolean, required: true },
 }, { timestamps: true, versionKey: false });
 
-export interface BookInput {
-  title: string;
-  author: string;
-  year: number;
-  genre: string;
-  available: boolean;
-}
-
-export interface BookFilters {
-  genre?: string;
-  available?: boolean;
-}
-
-export const Book = model('Book', bookSchema);
+export const BookModel = model('Book', bookSchema);

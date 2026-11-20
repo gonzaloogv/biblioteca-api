@@ -1,11 +1,15 @@
 import assert from 'node:assert/strict';
-import { after, before, describe, it, mock } from 'node:test';
+import { after, before, describe, it } from 'node:test';
 import type { Express } from 'express';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import request from 'supertest';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { createApp } from '../src/app.js';
+import { createMongoBookRepository } from '../src/components/books/book.repository.js';
+import { UserModel } from '../src/components/users/user.model.js';
+import { createContainer } from '../src/container.js';
 
 let app: Express;
 let database: MongoMemoryServer;
@@ -17,11 +21,9 @@ const book = { title: 'El principito', author: 'Antoine de Saint-Exupéry', year
 
 before(async () => {
   database = await MongoMemoryServer.create({ binary: { downloadDir: '.cache/mongodb' } });
-  process.env.MONGO_URI = database.getUri();
-  process.env.JWT_SECRET = secret;
   process.env.NODE_ENV = 'test';
   await mongoose.connect(database.getUri());
-  ({ app } = await import('../src/app.js'));
+  app = createApp(createContainer({ jwtSecret: secret }));
 }, { timeout: 180_000 });
 
 after(async () => {
@@ -48,8 +50,7 @@ describe('Autenticación', () => {
   });
 
   it('impide emails duplicados ante registros simultáneos', async () => {
-    const { User } = await import('../src/components/users/user.model.js');
-    await User.init();
+    await UserModel.init();
     const simultaneousUser = { ...user, email: 'concurrencia@example.com' };
     const responses = await Promise.all([
       request(app).post('/api/auth/register').send(simultaneousUser),
@@ -225,16 +226,16 @@ describe('Errores HTTP', () => {
   });
 
   it('responde 500 sin filtrar detalles internos cuando falla el repositorio', async () => {
-    const { bookRepository } = await import('../src/components/books/book.repository.js');
-    const failure = mock.method(bookRepository, 'findAll', () => {
-      throw new Error('Error privado de la base de datos');
-    });
-    try {
-      const response = await request(app).get('/api/books');
-      assert.equal(response.status, 500);
-      assert.deepEqual(response.body, { message: 'Error interno del servidor.' });
-    } finally {
-      failure.mock.restore();
-    }
+    // Gracias a la inyección de dependencias, se reemplaza el repositorio sin tocar el código de producción.
+    const failingRepository = {
+      ...createMongoBookRepository(),
+      findAll: async () => {
+        throw new Error('Error privado de la base de datos');
+      },
+    };
+    const failingApp = createApp(createContainer({ jwtSecret: secret }, { bookRepository: failingRepository }));
+    const response = await request(failingApp).get('/api/books');
+    assert.equal(response.status, 500);
+    assert.deepEqual(response.body, { message: 'Error interno del servidor.' });
   });
 });

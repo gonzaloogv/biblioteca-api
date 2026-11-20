@@ -5,6 +5,8 @@ import type { Express } from 'express';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import request from 'supertest';
+import { createApp } from '../src/app.js';
+import { createContainer } from '../src/container.js';
 
 interface CollectionRequest {
   name: string;
@@ -20,11 +22,9 @@ let app: Express;
 
 before(async () => {
   database = await MongoMemoryServer.create({ binary: { downloadDir: '.cache/mongodb' } });
-  process.env.MONGO_URI = database.getUri();
-  process.env.JWT_SECRET = 'otro-secreto-exclusivo-de-pruebas-para-la-coleccion';
   process.env.NODE_ENV = 'test';
   await mongoose.connect(database.getUri());
-  ({ app } = await import('../src/app.js'));
+  app = createApp(createContainer({ jwtSecret: 'otro-secreto-exclusivo-de-pruebas-para-la-coleccion' }));
 }, { timeout: 180_000 });
 
 after(async () => {
