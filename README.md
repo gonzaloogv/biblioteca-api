@@ -247,7 +247,21 @@ Si falta el token en una escritura, se responde 401 antes de validar el libro. E
 
 La colección crea y luego elimina su libro de prueba. También crea un usuario de ejemplo: en la primera ejecución el registro devuelve 201. En ejecuciones posteriores con el mismo email devolverá 400; para repetir todo, cambiá `email` en el entorno por otro email de ejemplo. Si el token vence, repetí el login. Para la captura del 400 por año futuro se usa 9999.
 
-La colección está preparada y su flujo se verifica por HTTP en las pruebas automatizadas. La importación y las capturas dentro de la interfaz de Thunder Client deben completarse en tu editor.
+### Resultados contra MongoDB Atlas
+
+La colección se ejecutó completa con el Collection Runner de Thunder Client contra la API conectada a MongoDB Atlas: **22/22 peticiones con el estado esperado**.
+
+| Captura | Qué muestra |
+| --- | --- |
+| [01-collection-runner-1-15.png](docs/capturas/01-collection-runner-1-15.png) | Runner: "All requests passed", peticiones 01 a 15 |
+| [02-collection-runner-3-22.png](docs/capturas/02-collection-runner-3-22.png) | Runner: peticiones 03 a 22 |
+| [03-error-401-crear-sin-token.png](docs/capturas/03-error-401-crear-sin-token.png) | `POST /api/books` sin token → 401 |
+| [04-error-400-titulo-vacio.png](docs/capturas/04-error-400-titulo-vacio.png) | `POST /api/books` con título vacío → 400 |
+| [05-error-404-libro-inexistente.png](docs/capturas/05-error-404-libro-inexistente.png) | `GET /api/books/:id` inexistente → 404 |
+| [06-exito-201-crear-libro.png](docs/capturas/06-exito-201-crear-libro.png) | `POST /api/books` con JWT → 201 |
+| [07-exito-200-eliminar-libro.png](docs/capturas/07-exito-200-eliminar-libro.png) | `DELETE /api/books/:id` con JWT → 200 |
+
+![Collection Runner de Thunder Client](docs/capturas/01-collection-runner-1-15.png)
 
 Referencia de importación: [documentación oficial de Thunder Client](https://docs.thunderclient.com/features/import). Las aserciones `res-code` y `set-env-var` siguen el [esquema oficial](https://github.com/thunderclient/thunderclient-mcp/blob/main/src/tools/definitions.ts).
 
@@ -284,13 +298,5 @@ Cubren registro, hash bcrypt, email duplicado, login, JWT, lectura pública, esc
 | Estados 200, 201, 400, 401, 404 y 500 | Controladores, middleware de errores y pruebas |
 | Try/catch en todos los controladores | `auth.controller.ts` y `book.controller.ts` |
 | dotenv, secretos y `.env.example` sin valores | `env.ts`, `.gitignore`, `.env.example` |
-| README y pruebas Thunder Client | Este archivo y `thunder-client/` |
+| README y pruebas Thunder Client | Este archivo, `thunder-client/` y `docs/capturas/` |
 | Extras implementados | Filtros con `req.query` y middleware de logging |
-
-## 10. Preparar la entrega
-
-- Configurar y comprobar la conexión con tu MongoDB Atlas.
-- Ejecutar las verificaciones y las peticiones de Thunder Client.
-- Completar tus datos de autor en la presentación de la entrega.
-- Crear un repositorio de GitHub y subir el código, el lockfile, el README, `.env.example` y la colección exportada o las capturas. Antes de subir, verificá que `.env` y `node_modules` estén excluidos.
-- Entregar el enlace del repositorio. Esta carpeta no crea ni publica un repositorio remoto automáticamente.
